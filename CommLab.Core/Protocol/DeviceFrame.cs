@@ -15,6 +15,9 @@ namespace CommLab.Core.Protocol
         public const byte CmdReadRegisterAck = 0x82;
         public const byte CmdError = 0x7F;
 
+        /// <summary>payload 长度上限，超出即视为假帧头（按协议实际最大值调整）</summary>
+        public const int MaxPayloadLength = 1024;
+
         public byte Cmd { get; set; }
         public byte[] Payload { get; set; } = Array.Empty<byte>();
 
@@ -67,6 +70,12 @@ namespace CommLab.Core.Protocol
                 // ② 头已就位，长度够不够
                 if (buffer.Count < 6) return false; // 2头+1cmd+2len+1crc
                 int len = (buffer[3] << 8) | buffer[4];
+                if (len > MaxPayloadLength)
+                {
+                    Logger.Warning("长度字段 {Len} 超出上限，按假帧头处理", len);
+                    buffer.RemoveAt(0);
+                    continue;                                    // 否则会一直等一个不存在的长度
+                }
                 int total = 6 + len;
                 if (buffer.Count < total) return false; // 半包，等更多数据
 

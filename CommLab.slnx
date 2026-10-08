@@ -2,4 +2,5 @@
   <Project Path="CommLab.Core/CommLab.Core.csproj" />
   <Project Path="CommLab.DeviceServer/CommLab.DeviceServer.csproj" />
   <Project Path="CommLab.Host/CommLab.Host.csproj" />
+  <Project Path="CommLab.Core.Tests/CommLab.Core.Tests.csproj" />
 </Solution>
